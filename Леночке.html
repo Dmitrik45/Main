@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Для Леночки</title>
+    <style>
+        body { 
+            margin: 0; height: 100vh; display: flex; flex-direction: column; 
+            align-items: center; justify-content: center; 
+            background: linear-gradient(135deg, #ffafbd, #ffc3a0); 
+            overflow: hidden; font-family: 'Segoe UI', sans-serif; cursor: pointer; 
+        }
+
+        /* Заметный снег */
+        .snow-heart {
+            position: absolute; top: -50px;
+            color: rgba(255, 255, 255, 0.8); /* Более яркий белый */
+            pointer-events: none;
+            animation: fall linear forwards;
+            z-index: 1;
+            filter: drop-shadow(0 0 5px rgba(255,255,255,0.5));
+        }
+
+        @keyframes fall {
+            to { transform: translateY(110vh) rotate(720deg); }
+        }
+
+        .card { 
+            text-align: center; background: rgba(255, 255, 255, 0.3); 
+            padding: 50px; border-radius: 40px; backdrop-filter: blur(12px); 
+            box-shadow: 0 15px 45px rgba(0,0,0,0.1); 
+            border: 2px solid rgba(255,255,255,0.5); 
+            z-index: 10; transition: 0.3s;
+        }
+        
+        h1 { color: #fff; font-size: 3.5rem; text-shadow: 3px 5px 10px rgba(0,0,0,0.15); margin: 0; }
+        .main-heart { font-size: 100px; animation: pulse 1.2s infinite; display: inline-block; filter: drop-shadow(0 0 20px #ff4d6d); }
+        
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
+
+        /* Крупный фейерверк */
+        .firework-heart {
+            position: absolute; pointer-events: none;
+            animation: explode 1.5s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+            z-index: 20; font-size: 30px;
+        }
+        @keyframes explode {
+            0% { transform: translate(0,0) scale(1) rotate(0deg); opacity: 1; }
+            100% { transform: translate(var(--x), var(--y)) scale(1.5) rotate(360deg); opacity: 0; }
+        }
+    </style>
+</head>
+<body onclick="launchFirework(event)">
+
+    <div class="card">
+        <div class="main-heart">❤️</div>
+        <h1>Леночка, я тебя люблю!</h1>
+        <p style="color: white; margin-top: 20px; font-weight: bold; letter-spacing: 1px; opacity: 0.8;">НАЖМИ ДЛЯ САЛЮТА</p>
+    </div>
+
+    <script>
+        // Густой снег
+        function createSnow() {
+            const heart = document.createElement('div');
+            heart.className = 'snow-heart';
+            heart.innerHTML = '❤';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.fontSize = Math.random() * 15 + 15 + 'px'; // Крупнее
+            const duration = Math.random() * 3 + 4;
+            heart.style.animationDuration = duration + 's';
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), duration * 1000);
+        }
+        setInterval(createSnow, 150); // В 2 раза чаще
+
+        // Мощный фейерверк
+        function launchFirework(e) {
+            const count = 30; // 30 сердец за один клик
+            for (let i = 0; i < count; i++) {
+                const h = document.createElement('div');
+                h.className = 'firework-heart';
+                h.innerHTML = i % 2 === 0 ? '❤️' : '💖';
+                h.style.left = e.clientX + 'px';
+                h.style.top = e.clientY + 'px';
+                
+                // Сильный разлет во все стороны
+                const angle = (i / count) * Math.PI * 2;
+                const distance = Math.random() * 400 + 100;
+                const x = Math.cos(angle) * distance + 'px';
+                const y = Math.sin(angle) * distance + 'px';
+                
+                h.style.setProperty('--x', x);
+                h.style.setProperty('--y', y);
+                
+                document.body.appendChild(h);
+                setTimeout(() => h.remove(), 1500);
+            }
+        }
+
+        // Авто-салюты по краям
+        setInterval(() => {
+            const x = Math.random() * window.innerWidth;
+            const y = Math.random() * window.innerHeight;
+            launchFirework({clientX: x, clientY: y});
+        }, 3000);
+    </script>
+</body>
+</html>
